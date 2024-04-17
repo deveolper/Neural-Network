@@ -7,7 +7,7 @@
 # Ook wil ik graag aangeven dat er een verschil is tussen built-in, extern, en intern.
 
 # 7.	Instrueer de LLM dat het geen backpropagation mag gebruiken en ook niet Gradient Descent algoritme. Vraag of het een simpele manier kan gebruiken op basis van de ‘error’ om de gewichten te trainen
-# Dus we moeten Hill climbing of een een genetic algorithm implementeren
+# Dus we moeten Hill climbing of een genetic algorithm implementeren
 
 # 6.	Train het netwerk met behulp van de gegeven training samples en evalueer de prestaties ervan.
 # Probleem: er zijn geen training samples gegeven
