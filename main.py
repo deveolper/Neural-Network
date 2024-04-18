@@ -22,7 +22,7 @@ TEST_SIZE = 0.15
 VALIDATION_SIZE = 0.30
 TRAIN_SIZE = 1 - TEST_SIZE - VALIDATION_SIZE
 
-FOURTH_ROOT_OF_SIZE = 15
+FOURTH_ROOT_OF_SIZE = 15 # 15 => 50625 samples
 
 # Omdat er geen training samples gegeven zijn, ga ik hier wat definieren.
 # Probleemomschrijving: checken of de som van de 4 getallen minstens 2.0 is.
@@ -99,6 +99,15 @@ class NeuralNetwork:
                 total_error += (expected_item - actual_item) ** 2
 
         return total_error
+    
+    def sum_of_absolute_errors(self, actual_outputs: list[list[float]], calculated_outputs: list[list[float]]) -> float:
+        summation: float = 0.0
+
+        for actual, calculated in zip(actual_outputs, calculated_outputs):
+            for actual_item, calculated_item in zip(actual, calculated):
+                summation += abs(actual_item - calculated_item)
+
+        return summation / len(actual_outputs)
 
     def forward(self, inputs: list[float]) -> list[float]:
         last_layer_outputs = inputs
@@ -269,6 +278,7 @@ def main():
 
     print(f"Test-data accuracy: {correct / total}")
     print(f"Sum of squared errors: {nn.sum_of_squared_errors(Y, [nn.forward(item) for item in X])}")
+    print(f"Sum of absolute errors: {nn.sum_of_absolute_errors(Y, [nn.forward(item) for item in X])}")
 
 
 if __name__ == "__main__":
