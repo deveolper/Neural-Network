@@ -91,6 +91,15 @@ class NeuralNetwork:
     def __init__(self, layers: list[Layer]) -> None:
         self.layers = layers
 
+    def sum_of_squared_errors(self, expected_outputs: list[list[float]], actual_outputs: list[list[float]]) -> float:
+        total_error = 0.0
+
+        for expected, actual in zip(expected_outputs, actual_outputs):
+            for expected_item, actual_item in zip(expected, actual):
+                total_error += (expected_item - actual_item) ** 2
+
+        return total_error
+
     def forward(self, inputs: list[float]) -> list[float]:
         last_layer_outputs = inputs
 
@@ -259,6 +268,7 @@ def main():
             correct += 1
 
     print(f"Test-data accuracy: {correct / total}")
+    print(f"Sum of squared errors: {nn.sum_of_squared_errors(Y, [nn.forward(item) for item in X])}")
 
 
 if __name__ == "__main__":
