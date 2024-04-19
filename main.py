@@ -21,8 +21,7 @@ import copy
 TEST_SIZE = 0.15
 VALIDATION_SIZE = 0.30
 TRAIN_SIZE = 1 - TEST_SIZE - VALIDATION_SIZE
-
-FOURTH_ROOT_OF_SIZE = 15
+FOURTH_ROOT_OF_SIZE = 10 # 15 => 50625 samples
 
 # Omdat er geen training samples gegeven zijn, ga ik hier wat definieren.
 # Probleemomschrijving: checken of de som van de 4 getallen minstens 2.0 is.
@@ -40,7 +39,6 @@ Y = [
 ]
 
 data_size = len(X)
-
 order = random.sample(range(data_size), data_size)
 
 X = [
@@ -90,6 +88,18 @@ class NeuralNetwork:
 
     def __init__(self, layers: list[Layer]) -> None:
         self.layers = layers
+
+    def sum_of_squared_errors(self, expected_outputs: list[list[float]], actual_outputs: list[list[float]]) -> float:
+        return sum((expected - actual) ** 2 for expected_list, actual_list in zip(expected_outputs, actual_outputs) for expected, actual in zip(expected_list, actual_list))
+    
+    def sum_of_absolute_errors(self, actual_outputs: list[list[float]], expected_outputs: list[list[float]]) -> float:
+        return sum(abs(expected - actual) for expected_list, actual_list in zip(expected_outputs, actual_outputs) for expected, actual in zip(expected_list, actual_list))
+
+    def mean_of_squared_errors(self, expected_outputs: list[list[float]], actual_outputs: list[list[float]]) -> float:
+        return sum((expected - actual) ** 2 for expected_list, actual_list in zip(expected_outputs, actual_outputs) for expected, actual in zip(expected_list, actual_list)) / len(expected_outputs)
+    
+    def mean_of_absolute_errors(self, actual_outputs: list[list[float]], expected_outputs: list[list[float]]) -> float:
+        return sum(abs(expected - actual) for expected_list, actual_list in zip(expected_outputs, actual_outputs) for expected, actual in zip(expected_list, actual_list)) / len(expected_outputs)
 
     def forward(self, inputs: list[float]) -> list[float]:
         last_layer_outputs = inputs
@@ -194,7 +204,6 @@ def main():
     delta = 1.0
 
     last_cost = nn.cost_from_inputs(Y, X)
-
     improved_cost = False
 
     while True:
@@ -218,7 +227,6 @@ def main():
             delta = 1.0
 
     print(f"test cost: {nn.cost(Y_TEST, X_TEST)}")
-
     print(nn.forward([0.1, 0.3, 0.2, 0.1]))
 
     total = 0
@@ -226,7 +234,6 @@ def main():
 
     for x, y in zip(X_TRAIN, Y_TRAIN):
         total += 1
-
         prediction = nn.forward(x)
 
         if prediction.index(max(prediction)) == y.index(max(y)):
@@ -239,7 +246,6 @@ def main():
 
     for x, y in zip(X_VALIDATION, Y_VALIDATION):
         total += 1
-
         prediction = nn.forward(x)
 
         if prediction.index(max(prediction)) == y.index(max(y)):
@@ -252,13 +258,16 @@ def main():
 
     for x, y in zip(X_TEST, Y_TEST):
         total += 1
-
         prediction = nn.forward(x)
 
         if prediction.index(max(prediction)) == y.index(max(y)):
             correct += 1
 
     print(f"Test-data accuracy: {correct / total}")
+    print(f"Sum of squared errors: {nn.sum_of_squared_errors(Y, [nn.forward(item) for item in X])}")
+    print(f"Sum of absolute errors: {nn.sum_of_absolute_errors(Y, [nn.forward(item) for item in X])}")
+    print(f"Mean of squared errors: {nn.mean_of_squared_errors(Y, [nn.forward(item) for item in X])}")
+    print(f"Mean of absolute errors: {nn.mean_of_absolute_errors(Y, [nn.forward(item) for item in X])}")
 
 
 if __name__ == "__main__":
